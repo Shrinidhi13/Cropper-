@@ -1,0 +1,269 @@
+h1 {
+    margin: 0 auto;
+    margin - top: 5rem;
+    margin - bottom: 2rem;
+    text - align: center;
+}
+
+.image - preview - container {
+    width: 50 %;
+    margin: 0 auto;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 3rem;
+    border - radius: 20px;
+}
+
+.image - preview - container img {
+    width: 100 %;
+    display: none;
+    margin - bottom: 30px;
+}
+
+.image - preview - container input {
+    display: none;
+}
+
+.image - preview - container label {
+    display: block;
+    width: 45 %;
+    height: 45px;
+    margin - left: 25 %;
+    text - align: center;
+    background: #8338ec;
+    color: #fff;
+    font - size: 15px;
+    text - transform: Uppercase;
+    font - weight: 400;
+    border - radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align - items: center;
+    justify - content: center;
+}
+
+
+
+
+
+// vars
+let result = document.querySelector('.result'),
+    img_result = document.querySelector('.img-result'),
+    img_w = document.querySelector('.img-w'),
+    img_h = document.querySelector('.img-h'),
+    options = document.querySelector('.options'),
+    save = document.querySelector('.save'),
+    cropped = document.querySelector('.cropped'),
+    dwn = document.querySelector('.download'),
+    upload = document.querySelector('#file-input'),
+    cropper = '';
+
+// on change show image with crop options
+upload.addEventListener('change', e => {
+    if (e.target.files.length) {
+        // start file reader
+        const reader = new FileReader();
+        reader.onload = e => {
+            if (e.target.result) {
+                // create new image
+                let img = document.createElement('img');
+                img.id = 'image';
+                img.src = e.target.result;
+
+                // clean result before
+                result.innerHTML = '';
+                // append new image
+                result.appendChild(img);
+                // show save btn and options
+                save.classList.remove('hide');
+                options.classList.remove('hide');
+                // init cropper
+                cropper = new Cropper(img);
+            }
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    }
+});
+
+// save on click
+save.addEventListener('click', e => {
+    e.preventDefault();
+    // get result to data uri
+    let imgSrc = cropper.getCroppedCanvas({
+        width: img_w.value // input value
+    }).toDataURL();
+    // remove hide class of img
+    cropped.classList.remove('hide');
+    img_result.classList.remove('hide');
+    // show image cropped
+    cropped.src = imgSrc;
+    dwn.classList.remove('hide');
+    dwn.download = 'imagename.png';
+    dwn.setAttribute('href', imgSrc);
+});
+
+
+.page {
+    margin: 1em auto;
+    max - width: 768px;
+    display: flex;
+    align - items: flex - start;
+    flex - wrap: wrap;
+    height: 100 %;
+}
+
+.box {
+    padding: 0.5em;
+    width: 100 %;
+    margin: 0.5em;
+}
+
+.box - 2 {
+    padding: 0.5em;
+    width: calc(100 % /2 - 1em);
+}
+
+.options label,
+.options input {
+    width: 4em;
+    padding: 0.5em 1em;
+}
+
+.btn_save_hide {
+    display: block;
+    width: 45 %;
+    height: 45px;
+    margin - left: 25 %;
+    text - align: center;
+    background: #8338ec;
+    color: #fff;
+    font - size: 15px;
+    text - transform: Uppercase;
+    font - weight: 400;
+    border - radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align - items: center;
+    justify - content: center;
+}
+
+.hide {
+    display: none;
+}
+
+img {
+    max - width: 100 %;
+}
+
+
+
+
+upload = document.querySelector('#file-upload')
+result = document.querySelector('#preview-selected-image')
+var cropper = '';
+
+const previewImage = (event) => {
+    /**
+    * Get the selected files.
+    */
+    const imageFiles = event.target.files;
+    /**
+    * Count the number of files selected.
+    */
+    const imageFilesLength = imageFiles.length;
+    /**
+    * If at least one image is selected, then proceed to display the preview.
+    */
+    if (imageFilesLength > 0) {
+        /**
+        * Get the image path.
+        */
+        let img = document.createElement('img');
+        img.id = 'image';
+        img.src = URL.createObjectURL(imageFiles[0]);
+
+        /**
+        * Select the image preview element.
+        */
+        const imagePreviewElement = document.querySelector("#preview-selected-image");
+        /**
+        * Assign the path to the image preview element.
+        */
+        // clean result before
+        imagePreviewElement.innerHTML = '';
+        imagePreviewElement.src = img.src;
+        imagePreviewElement.appendChild(img);
+
+        /**
+        * Show the element by changing the display value to "block".
+        */
+        imagePreviewElement.style.display = "block";
+
+
+    }
+};
+
+import Cropper from 'cropperjs'
+// Get the image preview container and the preview image element
+const imagePreviewContainer = document.querySelector('.image-preview-container');
+const previewImageElement = document.getElementById('#preview-selected-image');
+
+// Create a Cropper instance for the preview image element
+let cropper = null;
+previewImageElement.addEventListener('load', () => {
+    cropper = new Cropper(previewImageElement, {
+        aspectRatio: 1,
+        viewMode: 1,
+        autoCropArea: 0.5,
+    });
+});
+
+// Handle the file upload input
+const fileUploadInput = document.getElementById('file-upload');
+fileUploadInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        // Set the preview image source to the uploaded image
+        previewImageElement.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+});
+
+// Handle the form submission
+const form = document.querySelector('form');
+form.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    // Get the cropped image data and append it to the form data
+    const croppedData = cropper.getData();
+    const formData = new FormData(form);
+    formData.append('croppedImage', previewImageElement.src);
+    formData.append('croppedData', JSON.stringify(croppedData));
+
+    // Submit the form
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+    })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error(error));
+});
+
+save.addEventListener('click', e => {
+    e.preventDefault();
+    // get result to data uri
+    let imgSrc = cropper.getCroppedCanvas({
+        width: img_w.value // input value
+    }).toDataURL();
+    // remove hide class of img
+    cropped.classList.remove('hide');
+    img_result.classList.remove('hide');
+    // show image cropped
+    cropped.src = imgSrc;
+    dwn.classList.remove('hide');
+    dwn.download = 'imagename.png';
+    dwn.setAttribute('href', imgSrc);
+});
